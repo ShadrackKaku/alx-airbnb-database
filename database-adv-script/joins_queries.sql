@@ -12,7 +12,7 @@ FROM
 INNER JOIN
     users ON bookings.user_id = users.id;
 
--- 2. LEFT JOIN: Properties and Reviews
+-- 2. LEFT JOIN: Properties and Reviews (ordered by property title, then review rating descending)
 SELECT
     properties.id AS property_id,
     properties.title,
@@ -22,8 +22,12 @@ SELECT
 FROM
     properties
 LEFT JOIN
-    reviews ON properties.id = reviews.property_id;
+    reviews ON properties.id = reviews.property_id
+ORDER BY
+    properties.title ASC,
+    reviews.rating DESC;
 
+    
 -- 3. FULL OUTER JOIN: Users and Bookings
 SELECT
     users.id AS user_id,
