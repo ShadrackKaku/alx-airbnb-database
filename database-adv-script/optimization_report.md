@@ -102,5 +102,4 @@ LEFT JOIN
 WHERE
     pay.status = 'completed'
     AND pay.payment_date >= '2025-01-01';
-
     
