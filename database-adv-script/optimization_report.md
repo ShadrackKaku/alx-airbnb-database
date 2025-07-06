@@ -1,42 +1,106 @@
-# Query Optimization Report
+-- Initial complex query: Retrieve all bookings with user, property, and payment details
+SELECT
+    b.id AS booking_id,
+    b.check_in,
+    b.check_out,
+    u.id AS user_id,
+    u.full_name,
+    u.email,
+    p.id AS property_id,
+    p.title AS property_title,
+    p.location,
+    pay.id AS payment_id,
+    pay.amount,
+    pay.status,
+    pay.payment_date
+FROM
+    bookings b
+JOIN
+    users u ON b.user_id = u.id
+JOIN
+    properties p ON b.property_id = p.id
+LEFT JOIN
+    payments pay ON b.id = pay.booking_id;
 
-## 1. Initial Query
+-- Analyze the query's performance before optimization
+EXPLAIN ANALYZE
+SELECT
+    b.id AS booking_id,
+    b.check_in,
+    b.check_out,
+    u.id AS user_id,
+    u.full_name,
+    u.email,
+    p.id AS property_id,
+    p.title AS property_title,
+    p.location,
+    pay.id AS payment_id,
+    pay.amount,
+    pay.status,
+    pay.payment_date
+FROM
+    bookings b
+JOIN
+    users u ON b.user_id = u.id
+JOIN
+    properties p ON b.property_id = p.id
+LEFT JOIN
+    payments pay ON b.id = pay.booking_id;
 
-The initial query retrieves all bookings, user details, property details, and payment details using joins between the `bookings`, `users`, `properties`, and `payments` tables.
+-- Refactored/optimized query example:
+-- Using AND to filter for completed payments within a specific date range
+SELECT
+    b.id AS booking_id,
+    b.check_in,
+    b.check_out,
+    u.id AS user_id,
+    u.full_name,
+    u.email,
+    p.id AS property_id,
+    p.title AS property_title,
+    p.location,
+    pay.id AS payment_id,
+    pay.amount,
+    pay.status,
+    pay.payment_date
+FROM
+    bookings b
+JOIN
+    users u ON b.user_id = u.id
+JOIN
+    properties p ON b.property_id = p.id
+LEFT JOIN
+    payments pay ON b.id = pay.booking_id
+WHERE
+    pay.status = 'completed'
+    AND pay.payment_date >= '2025-01-01';
 
-## 2. Performance Analysis
+-- Analyze the query's performance after optimization
+EXPLAIN ANALYZE
+SELECT
+    b.id AS booking_id,
+    b.check_in,
+    b.check_out,
+    u.id AS user_id,
+    u.full_name,
+    u.email,
+    p.id AS property_id,
+    p.title AS property_title,
+    p.location,
+    pay.id AS payment_id,
+    pay.amount,
+    pay.status,
+    pay.payment_date
+FROM
+    bookings b
+JOIN
+    users u ON b.user_id = u.id
+JOIN
+    properties p ON b.property_id = p.id
+LEFT JOIN
+    payments pay ON b.id = pay.booking_id
+WHERE
+    pay.status = 'completed'
+    AND pay.payment_date >= '2025-01-01';
 
-Performance was analyzed using `EXPLAIN ANALYZE`.  
-**Potential inefficiencies observed:**
-- Full table scans if indexes are missing on join columns (`user_id`, `property_id`, `booking_id`).
-- Retrieving all columns and all rows can be slow for large datasets.
-- Unfiltered result set means more data processed and transferred.
-
-## 3. Refactoring and Optimization
-
-- **Indexes:** Ensure indexes exist on key columns:
-  - `bookings.user_id`
-  - `bookings.property_id`
-  - `payments.booking_id`
-- **Column selection:** Select only required columns.
-- **Filtering:** Apply `WHERE` clause for active or recent payments to limit rows if use-case allows.
-- **Join type:** Use `LEFT JOIN` for `payments` only if not all bookings have payments; otherwise, use `JOIN`.
-
-## 4. Optimized Query
-
-- Example optimization: Add WHERE clause to limit to `pay.status = 'completed'`, reducing result set size.
-- Confirmed index usage in join columns using `EXPLAIN ANALYZE`.
-- Reduced number of columns selected if possible.
-
-## 5. Results
-
-- **Before optimization:** Higher cost, possible table scans, slower execution time.
-- **After optimization:** Lower cost, index scans, faster execution time.
-
-## 6. Conclusion
-
-Proper indexing, selective column retrieval, and appropriate filtering can dramatically improve query performance for complex multi-table joins.
-
-**Prepared by:**  
-Shadrack Kaku  
-2025-07-06
+    
