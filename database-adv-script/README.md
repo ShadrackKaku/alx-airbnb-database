@@ -19,3 +19,13 @@ This directory contains advanced SQL queries for practicing the use of both corr
 2. Find users who have made more than 3 bookings (correlated subquery).
 
 See `subqueries.sql` for the actual SQL code.
+
+# Advanced SQL Practice – Aggregations and Window Functions
+
+This directory contains SQL queries that use aggregation and window functions for data analysis on a simulated Airbnb database.
+
+**Included queries:**
+1. Find the total number of bookings made by each user (with COUNT and GROUP BY).
+2. Rank properties based on the total number of bookings (with RANK window function).
+
+See `aggregations_and_window_functions.sql` for the SQL code.
